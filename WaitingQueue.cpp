@@ -62,4 +62,21 @@ namespace WaitingQueueTAD {
 
         return 1; // Sucesso
     }
+
+    int removeClient(WaitingQueue* queue, char* name) {
+        void removeFront(WaitingQueue* queue) {
+            if (queue->head == nullptr) {
+                return;
+            }
+
+            Node* temp = list->head;
+            queue->head = list->head->next;
+            if (queue->head != nullptr) {
+                queue->head->prev = nullptr;
+            } else {
+                queue->tail = nullptr;
+            }
+            delete temp;
+            queue->size--;
+        }
 }
