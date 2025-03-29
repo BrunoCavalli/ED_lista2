@@ -4,4 +4,4 @@
 Listas - Lista 2
 
 ## Descrição
-Esse projeto contem os exercicios da segunda lista de Estrutura de Dados
+Este projeto contém os exercícios da segunda lista de Estruturas de Dados, focados na implementação e manipulação de Tipos Abstratos de Dados (TAD).
