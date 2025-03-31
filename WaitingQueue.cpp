@@ -17,20 +17,53 @@ namespace WaitingQueueTAD {
     }
 
     void enqueue(WaitingQueue* queue, Client client) {
-        QueueNode* newNode = new QueueNode{};
+        if (!queue) return;
+    
+        QueueNode* newNode = new QueueNode;
         newNode->client = client;
-        newNode->next = queue->head;
+        newNode->next = nullptr;
         newNode->previous = nullptr;
-
-        if (queue->head != nullptr) {
-            queue->head->previous = newNode;
+    
+        // Se a fila está vazia
+        if (!queue->head) {
+            queue->head = queue->tail = newNode;
+        } else {
+            QueueNode* current = queue->tail;
+    
+            // Regras de intercalamento
+            int elderlyBefore = 0;
+            int generalBefore = 0;
+            while (current) {
+                if (current->client.priority == 1) elderlyBefore++;
+                else generalBefore++;
+    
+                if (client.priority == 1 && generalBefore >= 1) break;
+                if (client.priority == 0 && elderlyBefore >= 2) break;
+    
+                current = current->previous;
+            }
+    
+            if (!current) {
+                // Adicionar no início
+                newNode->next = queue->head;
+                queue->head->previous = newNode;
+                queue->head = newNode;
+            } else {
+                // Inserir após current
+                newNode->next = current->next;
+                newNode->previous = current;
+                if (current->next) {
+                    current->next->previous = newNode;
+                } else {
+                    queue->tail = newNode;
+                }
+                current->next = newNode;
+            }
         }
-        queue->head = newNode;
-
-        if (queue->tail == nullptr) {
-            queue->tail = newNode;
-        }
-
+    
+        // Atualiza contadores
+        if (client.priority == 1) queue->elderlyCount++;
+        else queue->generalCount++;
         queue->size++;
     }
 
@@ -64,19 +97,54 @@ namespace WaitingQueueTAD {
     }
 
     int removeClient(WaitingQueue* queue, char* name) {
-        void removeFront(WaitingQueue* queue) {
-            if (queue->head == nullptr) {
-                return;
-            }
-
-            Node* temp = list->head;
-            queue->head = list->head->next;
-            if (queue->head != nullptr) {
-                queue->head->prev = nullptr;
-            } else {
-                queue->tail = nullptr;
-            }
-            delete temp;
-            queue->size--;
+        if (!queue || !queue->head) {
+            return 0; // Fila vazia ou inválida
         }
+    
+        QueueNode* current = queue->head;
+        while (current) {
+            if (strcmp(current->client.name, name) == 0) {
+                // Ajusta os ponteiros
+                if (current->previous) {
+                    current->previous->next = current->next;
+                } else {
+                    queue->head = current->next; // Se for o primeiro nó
+                }
+    
+                if (current->next) {
+                    current->next->previous = current->previous;
+                } else {
+                    queue->tail = current->previous; // Se for o último nó
+                }
+    
+                // Atualiza contadores
+                if (current->client.priority == 1) {
+                    queue->elderlyCount--;
+                } else {
+                    queue->generalCount--;
+                }
+                queue->size--;
+    
+                // Libera memória
+                delete current;
+                return 1; // Removido com sucesso
+            }
+            current = current->next;
+        }
+        return 0; // Cliente não encontrado
+    }
+   
+    // Obeter ordem da fila
+    Client* getQueueOrder(const WaitingQueue* queue, int* numClients) {
+        if (!queue || queue->head == nullptr) {
+            *numClients = 0;
+            return 0; // Fila vazia ou inváliada
+        }
+
+        *numClients = queue->size;
+        
+
+    } 
+
+    
 }
