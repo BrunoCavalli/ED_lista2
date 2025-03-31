@@ -166,5 +166,21 @@ namespace WaitingQueueTAD {
 
     } 
 
+    void deleteQueue(WaitingQueue* queue) {
+        if (!queue) return; // Verifica se a fila existe
+    
+        QueueNode* temp;
+        while (queue->head) {  // Enquanto houver elementos na fila
+            temp = queue->head;
+            queue->head = queue->head->next; // Avança o ponteiro head
+            delete temp;  // Libera o nó atual
+        }
+    
+        queue->tail = nullptr; // Evita ponteiro solto
+        queue->size = 0;
+        queue->generalCount = 0;
+        queue->elderlyCount = 0;
+    }
+    
     
 }
