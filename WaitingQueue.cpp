@@ -141,8 +141,28 @@ namespace WaitingQueueTAD {
             return 0; // Fila vazia ou inváliada
         }
 
+        QueueNode* current = queue->head;        
         *numClients = queue->size;
-        
+        Client* order = new Client[*numClients];
+        int elderlyCount = 0;
+        int generalCount = 0;
+        int index = 0;
+
+        while (current) {
+            if (current->client.priority == 1) {
+                if ((elderlyCount < 2) || (generalCount = 0))
+                    order[index++] = current->client;
+                    elderlyCount++;
+            } else {
+                if ((elderlyCount <= 2) || (generalCount = 1))
+                order[index++] = current->client;
+                generalCount++;
+                elderlyCount = 0;
+            }
+            current = current->next;
+        }
+               
+        return order;
 
     } 
 
