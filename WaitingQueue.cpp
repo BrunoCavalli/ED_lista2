@@ -181,6 +181,20 @@ namespace WaitingQueueTAD {
         queue->generalCount = 0;
         queue->elderlyCount = 0;
     }
+ 
     
+    void printQueue(const WaitingQueue* queue) {
+        if (!queue || queue->head == nullptr) {
+            std::cout << "Fila vazia." << std::endl;
+            return;
+        }
+    
+        QueueNode* current = queue->head;
+        std::cout << "Fila atual:" << std::endl;
+        while (current) {
+            std::cout << "Nome: " << current->client.name << ", Prioridade: " << current->client.priority << std::endl;
+            current = current->next;
+        }
+    }
     
 }
